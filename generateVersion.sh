@@ -5,13 +5,13 @@
 # minor: feat, style
 # patch: build, fix, perf, refactor, revert
 
-GERAR_VERSAO=$1
-echo "Generate version: $GERAR_VERSAO"
+GENERATE_VERSION=$1
+echo "Generate version: $GENERATE_VERSION"
 
 PREVENT_REMOVE_FILE=$2
 
-ULTIMA_TAG=$(git describe --tags --abbrev=0 --always)
-echo "Last tag: #$ULTIMA_TAG#"
+LAST_TAG=$(git describe --tags --abbrev=0 --always)
+echo "Last tag: #$LAST_TAG#"
 PATTERN="^[0-9]+\.[0-9]+\.[0-9]+$"
 
 increment_version() {
@@ -37,7 +37,7 @@ increment_version() {
 
 push_newversion() {
     local new_version=$1
-    if [ "$GERAR_VERSAO" == "true" ]; then
+    if [ "$GENERATE_VERSION" == "true" ]; then
         echo "Generating new version..."
         git tag $new_version
         git push origin $new_version
@@ -52,25 +52,25 @@ create_file() {
         return 1
     fi
     if [ "$with_range" == "true" ]; then
-        git log $ULTIMA_TAG..HEAD --no-decorate --pretty=format:"%s" > messages.txt
+        git log $LAST_TAG..HEAD --no-decorate --pretty=format:"%s" > messages.txt
     else
         git log --no-decorate --pretty=format:"%s" > messages.txt
     fi
 }
 
 get_commit_range() {
-    if [[ $ULTIMA_TAG =~ $PATTERN ]]; then
+    if [[ $LAST_TAG =~ $PATTERN ]]; then
         create_file true
     else
         create_file
-        ULTIMA_TAG="0.0.0"
+        LAST_TAG="0.0.0"
     fi
     echo " " >> messages.txt
 }
 
 start() {
     get_commit_range
-    new_version=$ULTIMA_TAG
+    new_version=$LAST_TAG
     increment_type=""
 
     while read message; do
@@ -92,7 +92,7 @@ start() {
     done < messages.txt
 
     if [ -n "$increment_type" ]; then
-        new_version=$(increment_version $ULTIMA_TAG $increment_type)
+        new_version=$(increment_version $LAST_TAG $increment_type)
         echo "New version: $new_version"
         push_newversion $new_version
     else
