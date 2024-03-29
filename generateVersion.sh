@@ -8,10 +8,11 @@
 GERAR_VERSAO=$1
 echo "Generate version: $GERAR_VERSAO"
 
+PREVENT_REMOVE_FILE=$2
+
 ULTIMA_TAG=$(git describe --tags --abbrev=0 --always)
 echo "Last tag: #$ULTIMA_TAG#"
 PATTERN="^[0-9]+\.[0-9]+\.[0-9]+$"
-GITLOG=""
 
 increment_version() {
     local version=$1
@@ -40,39 +41,52 @@ push_newversion() {
         echo "Generating new version..."
         git tag $new_version
         git push origin $new_version
-        rm -f messages.txt
     else
         echo "To generate a new version, you must send the argument \"true\""
     fi
 }
 
-create_file_commits() {
-    if [[ $ULTIMA_TAG =~ $PATTERN ]]; then
-        GITLOG=$(git log $ULTIMA_TAG..HEAD --no-decorate --pretty=format:"%s")
+create_file() {
+    local with_range=$1
+    if [ -s messages.txt ]; then
+        return 1
+    fi
+    if [ "$with_range" == "true" ]; then
+        git log $ULTIMA_TAG..HEAD --no-decorate --pretty=format:"%s" > messages.txt
     else
-        GITLOG=$(git log --no-decorate --pretty=format:"%s")
+        git log --no-decorate --pretty=format:"%s" > messages.txt
+    fi
+}
+
+get_commit_range() {
+    if [[ $ULTIMA_TAG =~ $PATTERN ]]; then
+        create_file true
+    else
+        create_file
         ULTIMA_TAG="0.0.0"
     fi
-    echo $GITLOG > messages.txt
     echo " " >> messages.txt
 }
 
 start() {
-    create_file_commits
+    get_commit_range
     new_version=$ULTIMA_TAG
     increment_type=""
 
     while read message; do
-        if [[ $message =~ ((\(.*\))?\!:)|(BREAKING CHANGE:) ]]; then
+        if [[ $message =~ (([a-z]+)(\(.+\))?\!:)|(BREAKING CHANGE:) ]]; then
             increment_type="major"
+            echo "$increment_type - $message"
             break
-        elif [[ $message =~ feat|style ]]; then
+        elif [[ $message =~ (^(feat|style)(\(.+\))?:) ]]; then
             if [ -z "$increment_type" ] || [ "$increment_type" == "patch" ]; then
                 increment_type="minor"
+                echo "$increment_type - $message"
             fi
-        elif [[ $message =~ fix|build|perf|refactor|revert ]]; then
+        elif [[ $message =~ ^((fix|build|perf|refactor|revert)(\(.+\))?:) ]]; then
             if [ -z "$increment_type" ]; then
                 increment_type="patch"
+                echo "$increment_type - $message"
             fi
         fi
     done < messages.txt
@@ -87,3 +101,7 @@ start() {
 }
 
 start
+
+if [ -z "$PREVENT_REMOVE_FILE" ]; then
+    rm -f messages.txt
+fi
