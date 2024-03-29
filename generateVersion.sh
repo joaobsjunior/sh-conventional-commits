@@ -76,17 +76,14 @@ start() {
     while read message; do
         if [[ $message =~ (([a-z]+)(\(.+\))?\!:)|(BREAKING CHANGE:) ]]; then
             increment_type="major"
-            echo "$increment_type - $message"
             break
         elif [[ $message =~ (^(feat|style)(\(.+\))?:) ]]; then
             if [ -z "$increment_type" ] || [ "$increment_type" == "patch" ]; then
                 increment_type="minor"
-                echo "$increment_type - $message"
             fi
         elif [[ $message =~ ^((fix|build|perf|refactor|revert)(\(.+\))?:) ]]; then
             if [ -z "$increment_type" ]; then
                 increment_type="patch"
-                echo "$increment_type - $message"
             fi
         fi
     done < messages.txt
