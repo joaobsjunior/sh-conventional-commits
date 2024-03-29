@@ -64,16 +64,13 @@ start() {
 
     while read message; do
         if [[ $message =~ ((\(.*\))?\!:)|(BREAKING CHANGE:) ]]; then
-            echo "There is a breaking change: $message"
             increment_type="major"
             break
         elif [[ $message =~ feat|style ]]; then
-            echo "New feature or style change: $message"
             if [ -z "$increment_type" ] || [ "$increment_type" == "patch" ]; then
                 increment_type="minor"
             fi
         elif [[ $message =~ fix|build|perf|refactor|revert ]]; then
-            echo "Bug fix or other improvements: $message"
             if [ -z "$increment_type" ]; then
                 increment_type="patch"
             fi
