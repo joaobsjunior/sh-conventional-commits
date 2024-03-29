@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Regex para validar o padrão tipo 
+REGEX="^((Merge[ a-z-]* branch.*)|(Revert*)|((build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\(.*\))?!?: .*))"
+
+FILE=`cat $1` # Arquivo que contém a menssagem do commit
+
+echo "Commit Message: ${FILE}"
+
+if ! [[ $FILE =~ $REGEX ]]; then
+	echo >&2 "ERROR: Commit abortado por não seguir o padrão Conventional Commit.​"
+	exit 1
+else
+	echo >&2 "​Mensagem de commit válida."
+fi
