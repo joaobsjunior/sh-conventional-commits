@@ -9,8 +9,9 @@ Your computer must have the following technology(s) installed:
 > If you are using Windows as your operating system, you must run all commands through the "git bash" application.
 
 ## Installing the hooks locally
-If you wish to install the hook on your machine, run the following script inside your project folder:
+If you wish to install the hook on your machine, run the following script inside this project folder:
 ```bash
+chmod +x commit-msg
 bash setup.sh
 ```
 To verify if it was installed correctly, execute the command:
@@ -25,11 +26,12 @@ See the image below for an example of the expected response:
 Great! You now have the hook installed on your machine and from now on, all your commits will be validated to see if they follow conventional commits. 🍾🎉
 
 ## Automated version generation execution
-To check what the next release version will be, execute the command:
+1. Copy file `generateVersion.sh` to your project
+2. To check what the next release version will be, execute the command inside your project folder:
 ```bash
 bash generateVersion.sh
 ```
-To generate a new release version, creating a tag, execute the command with the parameter `true` (informs the script to generate a tag):
+3. To generate a new release version, creating a tag, execute the command with the parameter `true` (informs the script to generate a tag):
 ```bash
 bash generateVersion.sh true
 ```
