@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Rules for generating semantic versioning
-# major: breaking change (mandatory use of exclamation mark before the commit message)
+# major: breaking change
 # minor: feat, style
 # patch: build, fix, perf, refactor, revert
 
