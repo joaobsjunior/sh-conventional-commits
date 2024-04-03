@@ -1,5 +1,5 @@
 # conventional-commits
-Hooks and script for generating semantic versioning through conventional commits
+A hook that locally validates commit messages, checking if they follow the conventional commit pattern. The project also includes a shell script for generating semantic versions through conventional commits.
 
 ## Prerequisites
 Your computer must have the following technology(s) installed:
