@@ -21,7 +21,7 @@ git config --global --list | grep .git-template && ls $HOME/.git-template/hooks/
 Check if the lines with the keys `core.hookspath` and `init.templatedir` are displayed.
 See the image below for an example of the expected response:
 
-![image]("https://github.com/joaobsjunior/sh-conventional-commits/assets/7514536/401baeaa-a1c6-4901-ba4f-c9772994c60a")
+![print command line](https://github.com/joaobsjunior/sh-conventional-commits/assets/7514536/401baeaa-a1c6-4901-ba4f-c9772994c60a)
 
 Great! You now have the hook installed on your machine and from now on, all your commits will be validated to see if they follow conventional commits. 🍾🎉
 
