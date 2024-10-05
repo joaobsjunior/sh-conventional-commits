@@ -1,5 +1,5 @@
 #!/bin/sh
-PATH_TEMPLATE=~/.git-template
+PATH_TEMPLATE=$HOME/.git-template
 
 mkdir -p $PATH_TEMPLATE/hooks
 
